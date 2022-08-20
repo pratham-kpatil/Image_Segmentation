@@ -165,7 +165,7 @@ IMG_HEIGHT = X_train.shape[1]
 IMG_WIDTH  = X_train.shape[2]
 IMG_CHANNELS = X_train.shape[3]
 
-from simple_multi_unet_model import multi_unet_model, jacard_coef  
+from unet_model import multi_unet_model, jacard_coef  
 
 metrics=['accuracy', jacard_coef]
 

@@ -6,7 +6,7 @@ from PIL import Image
 import segmentation_models as sm
 from sklearn.preprocessing import MinMaxScaler
 from smooth_tiled_predictions import predict_img_with_smooth_windowing
-from simple_multi_unet_model import jacard_coef  
+from unet_model import jacard_coef  
 
 
 img = cv2.imread("test_data/image_part_008.jpg", 1)

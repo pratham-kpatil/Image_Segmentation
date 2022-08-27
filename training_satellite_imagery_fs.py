@@ -187,33 +187,6 @@ history1 = model.fit(X_train, y_train,
 
 
 model.save('models/satellite_standard_unet_100epochs.hdf5')
-
-#Resnet backbone
-# BACKBONE = 'resnet34'
-# preprocess_input = sm.get_preprocessing(BACKBONE)
-
-# preprocess input
-# X_train_prepr = preprocess_input(X_train)
-# X_test_prepr = preprocess_input(X_test)
-
-# define model
-# model_resnet_backbone = sm.Unet(BACKBONE, encoder_weights='imagenet', classes=n_classes, activation='softmax')
-
-# compile keras model with defined optimozer, loss and metrics
-#model_resnet_backbone.compile(optimizer='adam', loss=focal_loss, metrics=metrics)
-# model_resnet_backbone.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics)
-
-# print(model_resnet_backbone.summary())
-
-
-# history2=model_resnet_backbone.fit(X_train_prepr, 
-#           y_train,
-#           batch_size=16, 
-#           epochs=100,
-#           verbose=1,
-#           validation_data=(X_test_prepr, y_test))
-
-#model_resnet_backbone.save('models/satellite_standard_unet_100epochs.hdf5')
  
 # plot the training and validation accuracy and loss at each epoch
 # history = history2

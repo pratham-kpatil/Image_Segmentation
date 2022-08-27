@@ -17,7 +17,7 @@ original_mask = cv2.cvtColor(original_mask,cv2.COLOR_BGR2RGB)
 # weights = [0.1666, 0.1666, 0.1666, 0.1666, 0.1666, 0.1666]
 # dice_loss = sm.losses.DiceLoss(class_weights=weights) 
 # focal_loss = sm.losses.CategoricalFocalLoss()
-# total_loss = dice_loss + (2 * focal_loss)  #
+# total_loss = dice_loss + (2 * focal_loss)  
 
 from keras.models import load_model
 
@@ -30,14 +30,14 @@ patch_size = 256
 n_classes = 6
 scaler = MinMaxScaler()
 
-SIZE_X = (img.shape[1]//patch_size)*patch_size #Nearest size divisible by our patch size
-SIZE_Y = (img.shape[0]//patch_size)*patch_size #Nearest size divisible by our patch size
+SIZE_X = (img.shape[1]//patch_size)*patch_size #Nearest size divisible by patch size
+SIZE_Y = (img.shape[0]//patch_size)*patch_size #Nearest size divisible by patch size
 large_img = Image.fromarray(img)
 large_img = large_img.crop((0 ,0, SIZE_X, SIZE_Y))  #Crop from top left corner
 large_img = np.array(large_img)     
 
 
-patches_img = patchify(large_img, (patch_size, patch_size, 3), step=patch_size)  #Step=256 for 256 patches means no overlap
+patches_img = patchify(large_img, (patch_size, patch_size, 3), step=patch_size) 
 patches_img = patches_img[:,:,0,:,:,:]
 
 patched_prediction = []
@@ -61,17 +61,13 @@ unpatched_prediction = unpatchify(patched_prediction, (large_img.shape[0], large
 
 plt.imshow(unpatched_prediction)
 plt.axis('off')
-###################################################################################
-#Predict using smooth blending
 
 input_img = scaler.fit_transform(img.reshape(-1, img.shape[-1])).reshape(img.shape)
 
-# Use the algorithm. The `pred_func` is passed and will process all the image 8-fold by tiling small patches with overlap, called once with all those image as a batch outer dimension.
-# Note that model.predict(...) accepts a 4D tensor of shape (batch, x, y, nb_channels), such as a Keras model.
 predictions_smooth = predict_img_with_smooth_windowing(
     input_img,
     window_size=patch_size,
-    subdivisions=2,  # Minimal amount of overlap for windowing. Must be an even number.
+    subdivisions=2,
     nb_classes=n_classes,
     pred_func=(
         lambda img_batch_subdiv: model.predict((img_batch_subdiv))
@@ -81,8 +77,6 @@ predictions_smooth = predict_img_with_smooth_windowing(
 
 final_prediction = np.argmax(predictions_smooth, axis=2)
 
-###################
-#Convert labeled images back to original RGB colored masks. 
 
 def label_to_rgb(predicted_image):
     
@@ -119,26 +113,22 @@ def label_to_rgb(predicted_image):
     return(segmented_img)
 
 
-
-########################
-#Plot and save results
-prediction_with_smooth_blending=label_to_rgb(final_prediction)
-prediction_without_smooth_blending=label_to_rgb(unpatched_prediction)
+# Plot and save results
+# prediction_with_smooth_blending=label_to_rgb(final_prediction)
+# prediction_without_smooth_blending=label_to_rgb(unpatched_prediction)
 
 
-plt.figure(figsize=(12, 12))
-plt.subplot(221)
-plt.title('Testing Image')
-plt.imshow(img)
-plt.subplot(222)
-plt.title('Testing Label')
-plt.imshow(original_mask)
-plt.subplot(223)
-plt.title('Prediction without smooth blending')
-plt.imshow(prediction_without_smooth_blending)
-plt.subplot(224)
-plt.title('Prediction with smooth blending')
-plt.imshow(prediction_with_smooth_blending)
-plt.show()
-
-#############################
+# plt.figure(figsize=(12, 12))
+# plt.subplot(221)
+# plt.title('Testing Image')
+# plt.imshow(img)
+# plt.subplot(222)
+# plt.title('Testing Label')
+# plt.imshow(original_mask)
+# plt.subplot(223)
+# plt.title('Prediction without smooth blending')
+# plt.imshow(prediction_without_smooth_blending)
+# plt.subplot(224)
+# plt.title('Prediction with smooth blending')
+# plt.imshow(prediction_with_smooth_blending)
+# plt.show()
